@@ -1,3 +1,8 @@
+---
+name: cloudflare-management
+description: Cloudflare servislerini wrangler CLI ile coklu hesap destegiyle yonetmek icin kullan. D1, Workers, R2 ve zone islemlerinde komut kaliplarini ve guvenli uygulama kurallarini saglar.
+---
+
 # Cloudflare Yönetim Skill'i
 
 Bu skill, Cloudflare servislerini wrangler CLI üzerinden yönetmek için kullanılır.

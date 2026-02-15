@@ -52,6 +52,10 @@ console.error(`Yüklenen hesaplar: ${[...accounts.keys()].join(", ")}`);
 
 function getAccount(name?: string): Account {
   if (!name || name === "") {
+    const mivo = accounts.get("mivo");
+    if (mivo) {
+      return mivo;
+    }
     if (accounts.size === 1) {
       return accounts.values().next().value!;
     }
@@ -95,7 +99,10 @@ function cfApi(
   method: string = "GET",
   body?: any
 ): string {
-  const url = `https://api.cloudflare.com/client/v4/accounts/${account.id}${path}`;
+  const baseUrl = "https://api.cloudflare.com/client/v4";
+  const url = path.startsWith("/accounts/") || path.startsWith("/zones")
+    ? `${baseUrl}${path}`
+    : `${baseUrl}/accounts/${account.id}${path}`;
   const curlCmd = [
     "curl",
     "-s",
@@ -346,7 +353,7 @@ server.tool(
   async ({ account: accName }) => {
     try {
       const acc = getAccount(accName);
-      const result = cfApi(acc, "/../zones?account.id=" + acc.id);
+      const result = cfApi(acc, `/zones?account.id=${acc.id}`);
       const parsed = JSON.parse(result);
       if (parsed.result) {
         const zones = parsed.result
