@@ -3,7 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 
 // ── Config ────────────────────────────────────────────────
 // Hesaplar env'den okunur: ACCOUNT_<NAME>_ID ve ACCOUNT_<NAME>_TOKEN
@@ -21,7 +21,9 @@ for (const [key, value] of Object.entries(process.env)) {
   const idMatch = key.match(/^ACCOUNT_(.+)_ID$/);
   if (idMatch && value) {
     const name = idMatch[1].toLowerCase();
-    const token = process.env[`ACCOUNT_${idMatch[1]}_TOKEN`];
+    const token =
+      process.env[`ACCOUNT_${idMatch[1]}_TOKEN`] ||
+      process.env[`ACCOUNT_${idMatch[1]}_API_TOKEN`];
     if (token) {
       accounts.set(name, { id: value, token });
     }
@@ -31,7 +33,7 @@ for (const [key, value] of Object.entries(process.env)) {
 // Fallback: tek hesap modu
 if (accounts.size === 0) {
   const id = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const token = process.env.CLOUDFLARE_API_TOKEN;
+  const token = process.env.CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_TOKEN;
   if (id && token) {
     accounts.set("default", { id, token });
   }
@@ -80,7 +82,7 @@ function runWrangler(args: string, account: Account, cwd?: string): string {
   };
 
   try {
-    const result = execSync(`npx wrangler ${args}`, {
+    const result = execSync(`npx -y wrangler ${args}`, {
       env,
       cwd: cwd || process.cwd(),
       timeout: 60000,
@@ -382,14 +384,16 @@ server.tool(
   async ({ account: accName, worker, name: secretName, value, config }) => {
     try {
       const acc = getAccount(accName);
-      const result = execSync(
-        `echo "${value}" | npx wrangler secret put ${secretName} --name ${worker} --config ${config}`,
+      const result = execFileSync(
+        "npx",
+        ["-y", "wrangler", "secret", "put", secretName, "--name", worker, "--config", config],
         {
           env: {
             ...process.env,
             CLOUDFLARE_API_TOKEN: acc.token,
             CLOUDFLARE_ACCOUNT_ID: acc.id,
           },
+          input: `${value}\n`,
           timeout: 30000,
           encoding: "utf-8",
         }

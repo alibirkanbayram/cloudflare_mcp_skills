@@ -1,5 +1,5 @@
 {
-  "name": "mcp-cloudflare-lite",
+  "name": "@dots_software/mcp-cloudflare-lite",
   "version": "1.0.0",
   "description": "Lightweight Cloudflare MCP server with multi-account support",
   "type": "module",
@@ -9,9 +9,11 @@
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
     "dev": "tsc --watch",
-    "inspector": "npx @modelcontextprotocol/inspector build/index.js"
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js",
+    "prepack": "npm run build"
   },
   "files": ["build"],
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
     "zod": "^3.24.0"

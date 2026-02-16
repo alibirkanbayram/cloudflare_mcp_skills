@@ -18,6 +18,41 @@ npm install
 npm run build
 ```
 
+## Path Vermeden Calistirma (NPM/Npx)
+
+Bu MCP'yi `@cloudflare/mcp-server-cloudflare@latest` gibi cagirmak icin paketin NPM'de yayinli olmasi gerekir.
+Yayinlandiktan sonra local path yerine `npx` kullanabilirsin:
+
+```json
+{
+  "mcpServers": {
+    "cloudflare": {
+      "command": "npx",
+      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "hesap_id",
+        "CLOUDFLARE_API_TOKEN": "api_token"
+      }
+    }
+  }
+}
+```
+
+Not: Paket NPM'de yayinli degilse path vermen gerekir.
+
+### NPM'e Yayinlama
+
+```bash
+npm login
+npm version patch
+npm publish
+```
+
+Scoped paket istiyorsan:
+
+1. `package.json` icinde `name` alanini `@dots_software/mcp-cloudflare-lite` yap
+2. `npm publish --access public` calistir
+
 ## Hesap Ayarları
 
 ### Tek hesap
@@ -25,6 +60,8 @@ npm run build
 export CLOUDFLARE_ACCOUNT_ID="hesap_id"
 export CLOUDFLARE_API_TOKEN="api_token"
 ```
+
+Alternatif olarak `CLOUDFLARE_TOKEN` da desteklenir.
 
 ### Çoklu hesap
 ```bash
@@ -43,13 +80,11 @@ export ACCOUNT_DOTS_TOKEN="dots_token"
 {
   "mcpServers": {
     "cloudflare": {
-      "command": "node",
-      "args": ["/FULL/PATH/TO/mcp-cloudflare-lite/build/index.js"],
+      "command": "npx",
+      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
       "env": {
-        "ACCOUNT_MIVO_ID": "hesap_id_buraya",
-        "ACCOUNT_MIVO_TOKEN": "token_buraya",
-        "ACCOUNT_ATOLYE_ID": "hesap_id_buraya",
-        "ACCOUNT_ATOLYE_TOKEN": "token_buraya"
+        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
+        "CLOUDFLARE_API_TOKEN": "token_buraya"
       }
     }
   }
@@ -61,11 +96,11 @@ export ACCOUNT_DOTS_TOKEN="dots_token"
 {
   "mcpServers": {
     "cloudflare": {
-      "command": "node",
-      "args": ["/FULL/PATH/TO/mcp-cloudflare-lite/build/index.js"],
+      "command": "npx",
+      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
       "env": {
-        "ACCOUNT_MIVO_ID": "hesap_id_buraya",
-        "ACCOUNT_MIVO_TOKEN": "token_buraya"
+        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
+        "CLOUDFLARE_API_TOKEN": "token_buraya"
       }
     }
   }
@@ -77,11 +112,11 @@ export ACCOUNT_DOTS_TOKEN="dots_token"
 {
   "mcpServers": {
     "cloudflare": {
-      "command": "node",
-      "args": ["/FULL/PATH/TO/mcp-cloudflare-lite/build/index.js"],
+      "command": "npx",
+      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
       "env": {
-        "ACCOUNT_MIVO_ID": "hesap_id_buraya",
-        "ACCOUNT_MIVO_TOKEN": "token_buraya"
+        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
+        "CLOUDFLARE_API_TOKEN": "token_buraya"
       }
     }
   }
@@ -93,11 +128,11 @@ export ACCOUNT_DOTS_TOKEN="dots_token"
 {
   "mcpServers": {
     "cloudflare": {
-      "command": "node",
-      "args": ["/FULL/PATH/TO/mcp-cloudflare-lite/build/index.js"],
+      "command": "npx",
+      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
       "env": {
-        "ACCOUNT_MIVO_ID": "hesap_id_buraya",
-        "ACCOUNT_MIVO_TOKEN": "token_buraya"
+        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
+        "CLOUDFLARE_API_TOKEN": "token_buraya"
       }
     }
   }
