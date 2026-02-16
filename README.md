@@ -1,27 +1,27 @@
 # mcp-cloudflare-lite
 
-Cloudflare'in 89 tool'luk MCP sunucusu yerine, sadece ihtiyacın olan **14 tool** ile çalışan hafif MCP sunucusu.
-Çoklu hesap desteği dahil.
+A lightweight Cloudflare MCP server focused on the most common workflows (D1, Workers, R2, Zones, and raw Wrangler commands).
 
-## Özellikler
+Published package:
+- `@dots_software/mcp-cloudflare-lite`
 
-- **14 tool** (89 yerine) — Antigravity, Cursor, Claude Desktop hepsinde sorunsuz çalışır
-- **Çoklu hesap** — MIVO, Atölye, DOTS... hepsi aynı MCP'den yönetilir
-- **wrangler CLI tabanlı** — Altta wrangler çalıştırır, ekstra API yoktur
-- **Genel wrangler komutu** — `wrangler_run` ile istediğin komutu geçebilirsin
+## Features
 
-## Kurulum
+- Smaller tool surface (focused set of tools)
+- Works with API token + account ID (no `wrangler login` required)
+- Supports single-account and multi-account env setups
+- Includes `wrangler_run` for advanced/custom Wrangler commands
+
+## Install (local development)
 
 ```bash
-cd mcp-cloudflare-lite
 npm install
 npm run build
 ```
 
-## Path Vermeden Calistirma (NPM/Npx)
+## Use Without Local Path (via npm)
 
-Bu MCP'yi `@cloudflare/mcp-server-cloudflare@latest` gibi cagirmak icin paketin NPM'de yayinli olmasi gerekir.
-Yayinlandiktan sonra local path yerine `npx` kullanabilirsin:
+Use this in MCP client configs:
 
 ```json
 {
@@ -30,153 +30,71 @@ Yayinlandiktan sonra local path yerine `npx` kullanabilirsin:
       "command": "npx",
       "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
       "env": {
-        "CLOUDFLARE_ACCOUNT_ID": "hesap_id",
-        "CLOUDFLARE_API_TOKEN": "api_token"
+        "CLOUDFLARE_ACCOUNT_ID": "your_account_id",
+        "CLOUDFLARE_API_TOKEN": "your_api_token"
       }
     }
   }
 }
 ```
 
-Not: Paket NPM'de yayinli degilse path vermen gerekir.
+If your environment has `npx` path issues (for example with `nvm`), set an absolute command path and/or explicit `PATH`.
 
-### NPM'e Yayinlama
+## Authentication
+
+Single account (recommended):
 
 ```bash
-npm login
-npm version patch
-npm publish
+export CLOUDFLARE_ACCOUNT_ID="your_account_id"
+export CLOUDFLARE_API_TOKEN="your_api_token"
 ```
 
-Scoped paket istiyorsan:
+Also supported:
+- `CLOUDFLARE_TOKEN` (as an alternative token variable name)
 
-1. `package.json` icinde `name` alanini `@dots_software/mcp-cloudflare-lite` yap
-2. `npm publish --access public` calistir
+Multi-account (optional):
 
-## Hesap Ayarları
-
-### Tek hesap
 ```bash
-export CLOUDFLARE_ACCOUNT_ID="hesap_id"
-export CLOUDFLARE_API_TOKEN="api_token"
+export ACCOUNT_MAIN_ID="account_id"
+export ACCOUNT_MAIN_TOKEN="api_token"
+export ACCOUNT_STAGE_ID="account_id"
+export ACCOUNT_STAGE_TOKEN="api_token"
 ```
 
-Alternatif olarak `CLOUDFLARE_TOKEN` da desteklenir.
+You can also use `ACCOUNT_<NAME>_API_TOKEN`.
 
-### Çoklu hesap
-```bash
-export ACCOUNT_MIVO_ID="mivo_hesap_id"
-export ACCOUNT_MIVO_TOKEN="mivo_token"
-export ACCOUNT_ATOLYE_ID="atolye_hesap_id"
-export ACCOUNT_ATOLYE_TOKEN="atolye_token"
-export ACCOUNT_DOTS_ID="dots_hesap_id"
-export ACCOUNT_DOTS_TOKEN="dots_token"
-```
+## Available Tools
 
-## MCP Config (Tüm Platformlar İçin)
+- `list_accounts`
+- `whoami`
+- `d1_list`
+- `d1_query`
+- `d1_execute_file`
+- `worker_list`
+- `worker_deploy`
+- `worker_tail`
+- `r2_list_buckets`
+- `r2_list_objects`
+- `r2_delete_object`
+- `zones_list`
+- `secret_put`
+- `wrangler_run`
 
-### Antigravity (mcp_config.json)
-```json
-{
-  "mcpServers": {
-    "cloudflare": {
-      "command": "npx",
-      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
-      "env": {
-        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
-        "CLOUDFLARE_API_TOKEN": "token_buraya"
-      }
-    }
-  }
-}
-```
+## Example Prompts
 
-### Cursor / Windsurf / VS Code (.cursor/mcp.json)
-```json
-{
-  "mcpServers": {
-    "cloudflare": {
-      "command": "npx",
-      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
-      "env": {
-        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
-        "CLOUDFLARE_API_TOKEN": "token_buraya"
-      }
-    }
-  }
-}
-```
-
-### Claude Desktop (claude_desktop_config.json)
-```json
-{
-  "mcpServers": {
-    "cloudflare": {
-      "command": "npx",
-      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
-      "env": {
-        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
-        "CLOUDFLARE_API_TOKEN": "token_buraya"
-      }
-    }
-  }
-}
-```
-
-### Claude Code (~/.claude/settings.json)
-```json
-{
-  "mcpServers": {
-    "cloudflare": {
-      "command": "npx",
-      "args": ["-y", "-p", "@dots_software/mcp-cloudflare-lite@latest", "mcp-cloudflare-lite"],
-      "env": {
-        "CLOUDFLARE_ACCOUNT_ID": "hesap_id_buraya",
-        "CLOUDFLARE_API_TOKEN": "token_buraya"
-      }
-    }
-  }
-}
-```
-
-## Mevcut Tool'lar (14 adet)
-
-| Tool | Açıklama |
-|------|----------|
-| `list_accounts` | Tanımlı hesapları listele |
-| `whoami` | Hesap doğrulama |
-| `d1_list` | D1 veritabanlarını listele |
-| `d1_query` | D1'de SQL sorgusu çalıştır |
-| `d1_execute_file` | D1'de SQL dosyası çalıştır |
-| `worker_list` | Worker'ları listele |
-| `worker_deploy` | Worker deploy et |
-| `worker_tail` | Worker loglarını göster |
-| `r2_list_buckets` | R2 bucket'ları listele |
-| `r2_list_objects` | R2 objeleri listele |
-| `r2_delete_object` | R2 objesi sil |
-| `zones_list` | DNS zone'ları listele |
-| `secret_put` | Worker'a secret ekle |
-| `wrangler_run` | Herhangi bir wrangler komutu çalıştır |
-
-## Kullanım Örnekleri
-
-Agent'a şu şekilde prompt verebilirsin:
-
-- "MIVO hesabındaki D1 tablolarını listele"
-- "Atölye hesabındaki worker'ları göster"
-- "mivo-db'de users tablosundaki son 10 kaydı getir"
-- "Worker'ı deploy et"
-
-`wrangler_run` tool'u ile herhangi bir wrangler komutu çalıştırılabilir:
-- `wrangler_run` → command: "d1 export mivo-db --remote --output backup.sql"
-- `wrangler_run` → command: "r2 object put bucket/key --file ./file.jpg"
+- "List D1 databases"
+- "Show all workers"
+- "Run this SQL on my database"
+- "Deploy the worker in this directory"
+- "Run wrangler command: d1 info my-db"
 
 ## Test
 
 ```bash
-# MCP Inspector ile test
 npm run inspector
-
-# Veya doğrudan
 node build/index.js
 ```
+
+## Turkish Documentation
+
+See: `README_tr.md`
